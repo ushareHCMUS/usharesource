@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.collection-header {
+  text-align: center;
+}
+
+.members-container {
+  max-height: 50% !important;
+}
+
+.members-list {
+  max-height: 100%;
+  overflow: auto;
+}
+
+.btn-danger {
+  background: #DC3545 !important;
+}
+
+.btn-danger:hover {
+  background: #BD2130 !important;
+}
+
+.btn-primary {
+  background: #007BFF !important;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+}
+
+.btn-primary:hover {
+  background: #0062CC !important;
+}
+
+.secondary-content {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.secondary-content:focus {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.modal {
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+.show {
+  z-index: 1 !important;
+}
+
+.collapsing {
+  z-index: 1 !important;
+}
+
+.nav-link {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  font-size: 1.25rem;
+}
+
+.navbar-brand {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  font-size: 2.5rem;
+}
+
+.navbar-collapse {
+  max-width: 100% !important;
+}
+
+textarea{
+  height: 200px !important;
+}
