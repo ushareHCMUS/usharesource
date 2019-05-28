@@ -35,7 +35,9 @@ class NewsDetails extends Component {
                     </h5>
                   </div>
                   <div className="card-body">
-                    <p>{news.content}</p>
+                    <p>{news.content}</p><br/>
+                    <p>{news.time}</p><br/>
+                    <p>{news.place}</p>
                   </div>
                   <div className="card-footer text-muted">
                     {news.timeStamp.toDate().toString()}

@@ -19,7 +19,10 @@ class AddNews extends Component {
       selectedGroups: [],
       title: '',
       content: '',
-      isImportant: null
+      time: '',
+      place: '',
+      isImportant: null,
+      isPublic: [{value:'', label:'Is public?'}]
     };
     this.handleGroupsSelect = this.handleGroupsSelect.bind(this);
   }
@@ -31,21 +34,24 @@ class AddNews extends Component {
     });
   }
 
-    //Handle select change
-    handleImportantSelect = (isImportant) => {
-      this.setState({
-        isImportant
-      });
-    }
+  //Handle select change
+  handleImportantSelect = (isImportant) => {
+    this.setState({
+      isImportant
+    });
+  }
 
   //Handle form submit
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.addNews(
-      { 
-        title: this.state.title, 
-        content: this.state.content, 
-        isImportant: this.state.isImportant 
+      {
+        title: this.state.title,
+        content: this.state.content,
+        isImportant: this.state.isImportant,
+        time: this.state.time,
+        place: this.state.place,
+        isPublic: this.state.isPublic
       }, this.state.selectedGroups);
   }
 
@@ -63,7 +69,10 @@ class AddNews extends Component {
       selectedGroups: [],
       title: '',
       content: '',
-      isImportant: null
+      time: '',
+      place: '',
+      isImportant: null,
+      isPublic: [{value:'', label:'Is public?'}]
     });
     this.props.changeAddStatus();
   }
@@ -73,14 +82,26 @@ class AddNews extends Component {
       this.setState({ show: true });
   }
 
+  handlePublicSelect = (isPublic) => {
+    this.setState({
+      isPublic
+    }, () => {
+      if (this.state.isPublic.value === true) this.setState({ selectedGroups: [] })
+    })
+  }
+
   render() {
     const groupsOptions = [];
     const importantOptions = [
       { value: true, label: 'True' },
       { value: false, label: 'False' }
-    ]
+    ];
+    const isPublic = [
+      { value: true, label: 'True' },
+      { value: false, label: 'False' }
+    ];
     const { groups, auth } = this.props;
-    if(!auth.uid) return <Redirect to='/signin'></Redirect>
+    if (!auth.uid) return <Redirect to='/signin'></Redirect>
     this.handleShow();
     if (groups) {
       if (groupsOptions.length === 0) {
@@ -96,24 +117,43 @@ class AddNews extends Component {
               <form className='need-validation' onSubmit={this.handleSubmit}>
 
                 <div className="mb-3">
-                  <label htmlFor="title">Title</label>
+                  <label htmlFor="title">Title *</label>
                   <input type="text" className="form-control" id="title" placeholder="" onChange={this.handleChange} value={this.state.title} required />
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="content">Content</label>
+                  <label htmlFor="content">Content *</label>
                   <textarea className="form-control" id="content" placeholder="" onChange={this.handleChange} value={this.state.content} required />
                 </div>
+                <div className="mb-3">
+                  <label htmlFor="time">Time</label>
+                  <input className="form-control" id="time" placeholder="" onChange={this.handleChange} value={this.state.time} />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="place">Place</label>
+                  <input className="form-control" id="place" placeholder="" onChange={this.handleChange} value={this.state.place} />
+                </div>
 
-                <Select value={this.state.selectedGroups}
-                  options={groupsOptions}
-                  onChange={this.handleGroupsSelect}
-                  placeholder='Select groups'
-                  name='groupsId'
-                  required
-                  isMulti
-                  allowSelectAll
-                />
+                {
+                  this.state.isPublic.value !== true ? <Select value={this.state.selectedGroups}
+                    options={groupsOptions}
+                    onChange={this.handleGroupsSelect}
+                    placeholder='Select groups'
+                    name='groupsId'
+                    required
+                    isMulti
+                    allowSelectAll
+                  /> : <Select value={this.state.selectedGroups}
+                    options={groupsOptions}
+                    onChange={this.handleGroupsSelect}
+                    placeholder='Select groups'
+                    name='groupsId'
+                    required
+                    isMulti
+                    allowSelectAll
+                    isDisabled
+                    />
+                }
 
                 <Select value={this.state.isImportant}
                   options={importantOptions}
@@ -123,16 +163,24 @@ class AddNews extends Component {
                   required
                 />
 
+                <Select value={this.state.isPublic}
+                  options={isPublic}
+                  onChange={this.handlePublicSelect}
+                  placeholder='Public news?'
+                  name='isPublic'
+                  required
+                />
+
                 <button className="btn btn-primary btn-lg btn-block" type="submit">Add</button>
               </form>
             </div>
           </div>
           <Modal show={this.state.show} onHide={this.handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Thành công</Modal.Title>
+              <Modal.Title>Success</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Thêm tin thành công
+              Successfully added news
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={this.handleClose}>
@@ -159,9 +207,10 @@ const mapStateToProps = (state) => {
   const groups = state.firestore.ordered.groups;
   console.log(state.news.addStatus);
   return {
+    
+    auth: state.firebase.auth,
     groups: groups,
-    status: state.news.addStatus, 
-    auth: state.firebase.auth
+    status: state.news.addStatus
   }
 }
 

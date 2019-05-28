@@ -19,7 +19,10 @@ class EditNews extends Component {
       selectedGroups: [],
       title: '',
       content: '',
-      isImportant: null
+      time: '',
+      place: '',
+      isImportant: null,
+      isPublic: null
     };
     this.handleGroupsSelect = this.handleGroupsSelect.bind(this);
   }
@@ -50,7 +53,10 @@ class EditNews extends Component {
         title: this.state.title,
         content: this.state.content,
         isImportant: this.state.isImportant.value,
-        id: news.id
+        id: news.id,
+        time: this.state.time,
+        place: this.state.place,
+        isPublic: this.state.isPublic
       }, this.state.selectedGroups, groupsArr);
   }
 
@@ -71,6 +77,14 @@ class EditNews extends Component {
       this.setState({ show: true });
   }
 
+  handlePublicSelect = (isPublic) => {
+    this.setState({
+      isPublic
+    },() => {
+      if(this.state.isPublic.value === true) this.setState({selectedGroups:[]})
+    })
+  }
+
   componentWillMount = () => {
     const { news } = this.props;
     if (news) {
@@ -80,11 +94,13 @@ class EditNews extends Component {
         )
       });
       const isImportant = { value: news.isImportant, label: news.isImportant.toString().charAt(0).toUpperCase() + news.isImportant.toString().slice(1) };
+      const isPublic = { value: news.isPublic, label: news.isPublic.toString().charAt(0).toUpperCase() + news.isPublic.toString().slice(1) };
       this.setState({
         selectedGroups: groups,
         title: news.title,
         content: news.content,
-        isImportant: isImportant
+        isImportant: isImportant,
+        isPublic: isPublic
       })
     }
   }
@@ -94,9 +110,13 @@ class EditNews extends Component {
     const importantOptions = [
       { value: true, label: 'True' },
       { value: false, label: 'False' }
+    ];
+    const isPublic = [
+      { value: true, label: 'True' },
+      { value: false, label: 'False' }
     ]
     const { groups, news, auth } = this.props;
-    if(!auth.uid) return <Redirect to='/signin'></Redirect>
+    if (!auth.uid) return <Redirect to='/signin'></Redirect>
     if (news === undefined) return <Redirect to='/'></Redirect>
     this.handleShow();
     if (groups && news) {
@@ -123,16 +143,35 @@ class EditNews extends Component {
                   <textarea className="form-control" id="content" placeholder=""
                     onChange={this.handleChange} value={this.state.content} required />
                 </div>
+                <div className="mb-3">
+                  <label htmlFor="time">Time</label>
+                  <input className="form-control" id="time" placeholder="" onChange={this.handleChange} value={this.state.time} />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="place">Place</label>
+                  <input className="form-control" id="place" placeholder="" onChange={this.handleChange} value={this.state.place} />
+                </div>
 
-                <Select value={this.state.selectedGroups}
-                  options={groupsOptions}
-                  onChange={this.handleGroupsSelect}
-                  placeholder='Select groups'
-                  name='groupsId'
-                  required
-                  isMulti
-                  allowSelectAll
-                />
+                {
+                  this.state.isPublic.value!==true ? <Select value={this.state.selectedGroups}
+                    options={groupsOptions}
+                    onChange={this.handleGroupsSelect}
+                    placeholder='Select groups'
+                    name='groupsId'
+                    required
+                    isMulti
+                    allowSelectAll
+                  /> : <Select value={this.state.selectedGroups}
+                    options={groupsOptions}
+                    onChange={this.handleGroupsSelect}
+                    placeholder='Select groups'
+                    name='groupsId'
+                    required
+                    isMulti
+                    allowSelectAll
+                    isDisabled
+                  />
+                }
 
                 <Select value={this.state.isImportant}
                   options={importantOptions}
@@ -142,16 +181,24 @@ class EditNews extends Component {
                   required
                 />
 
+                <Select value={this.state.isPublic}
+                  options={isPublic}
+                  onChange={this.handlePublicSelect}
+                  placeholder='Public news?'
+                  name='isPublic'
+                  required
+                />
+
                 <button className="btn btn-primary btn-lg btn-block" type="submit">Edit</button>
               </form>
             </div>
           </div>
           <Modal show={this.state.show} onHide={this.handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Thành công</Modal.Title>
+              <Modal.Title>Success</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Thêm tin thành công
+              Successfully edited news
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={this.handleClose}>

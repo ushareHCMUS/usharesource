@@ -153,7 +153,7 @@ const mapStateToProps = (state, ownProps) => {
   //Get selected group
   const group = groups ? groups.filter(target => (target.id === 'hcmus'))[0] : null;
   const news = state.firestore.ordered.news;
-  const groupNews = news ? news.filter(groupNews => (groupNews.groups !== undefined && groupNews.groups.includes('hcmus'))) : null;
+  const groupNews = news ? news.filter(groupNews => (groupNews.isPublic !== undefined && groupNews.isPublic === true)) : null;
   return {
     group: group,
     news: groupNews,

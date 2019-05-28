@@ -174,11 +174,18 @@ class GroupDetails extends Component {
     }
   }
 
+  componentWillReceiveProps = (newProps) => {
+    if (newProps.users !== this.props.users)
+      this.setState({
+        users: newProps.users
+      })
+  }
+
   render() {
 
     const { group, users, news, auth } = this.props;
     if (group === undefined) return <Redirect to='/'></Redirect>
-    if(!auth.uid) return <Redirect to='/signin'></Redirect>
+    if (!auth.uid) return <Redirect to='/signin'></Redirect>
     if (group && users && news) {
       this.changeState();
       return (

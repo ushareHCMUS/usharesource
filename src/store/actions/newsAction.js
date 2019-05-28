@@ -15,7 +15,10 @@ export const addNews = (news, groups) => {
         content: news.content,
         groups: groupsArr,
         isImportant: news.isImportant.value,
-        timeStamp: firestore.FieldValue.serverTimestamp()
+        time: news.time,
+        place: news.place,
+        timeStamp: firestore.FieldValue.serverTimestamp(),
+        isPublic: news.isPublic.value
       })
       batch.commit().then(() => {
         dispatch({ type: 'ADD_NEWS', news: news, groups: groups });
@@ -57,7 +60,10 @@ export const editNews = (news, groups, allGroups) => {
       title: news.title,
       content: news.content,
       groups: groupsArr,
-      isImportant: news.isImportant
+      isImportant: news.isImportant,
+      place: news.place,
+      time: news.time,
+      isPublic: news.isPublic.value
     });
     batch.commit()
     .then(() => {
