@@ -22,7 +22,7 @@ class AddNews extends Component {
       time: '',
       place: '',
       isImportant: null,
-      isPublic: [{value:'', label:'Is public?'}]
+      isPublic: null
     };
     this.handleGroupsSelect = this.handleGroupsSelect.bind(this);
   }
@@ -72,7 +72,7 @@ class AddNews extends Component {
       time: '',
       place: '',
       isImportant: null,
-      isPublic: [{value:'', label:'Is public?'}]
+      isPublic: null
     });
     this.props.changeAddStatus();
   }
@@ -85,8 +85,6 @@ class AddNews extends Component {
   handlePublicSelect = (isPublic) => {
     this.setState({
       isPublic
-    }, () => {
-      if (this.state.isPublic.value === true) this.setState({ selectedGroups: [] })
     })
   }
 
@@ -134,26 +132,13 @@ class AddNews extends Component {
                   <input className="form-control" id="place" placeholder="" onChange={this.handleChange} value={this.state.place} />
                 </div>
 
-                {
-                  this.state.isPublic.value !== true ? <Select value={this.state.selectedGroups}
-                    options={groupsOptions}
-                    onChange={this.handleGroupsSelect}
-                    placeholder='Select groups'
-                    name='groupsId'
-                    required
-                    isMulti
-                    allowSelectAll
-                  /> : <Select value={this.state.selectedGroups}
-                    options={groupsOptions}
-                    onChange={this.handleGroupsSelect}
-                    placeholder='Select groups'
-                    name='groupsId'
-                    required
-                    isMulti
-                    allowSelectAll
-                    isDisabled
-                    />
-                }
+                <Select value={this.state.selectedGroups}
+                  options={groupsOptions}
+                  onChange={this.handleGroupsSelect}
+                  placeholder='Select groups'
+                  name='groupsId'
+                  required
+                />
 
                 <Select value={this.state.isImportant}
                   options={importantOptions}
@@ -166,7 +151,7 @@ class AddNews extends Component {
                 <Select value={this.state.isPublic}
                   options={isPublic}
                   onChange={this.handlePublicSelect}
-                  placeholder='Public news?'
+                  placeholder='Is public?'
                   name='isPublic'
                   required
                 />
@@ -207,7 +192,7 @@ const mapStateToProps = (state) => {
   const groups = state.firestore.ordered.groups;
   console.log(state.news.addStatus);
   return {
-    
+
     auth: state.firebase.auth,
     groups: groups,
     status: state.news.addStatus

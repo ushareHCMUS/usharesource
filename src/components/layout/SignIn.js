@@ -7,14 +7,14 @@ class SignIn extends Component {
   state = {
     email: '',
     password: '',
-    error: ''
+    error: null
   }
   handleChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value
     });
-    if (this.state.error !== '') {
-      this.setState({ error: '' })
+    if (this.state.error !== null) {
+      this.setState({ error: null })
     }
   }
   handleSubmit = (e) => {
@@ -41,7 +41,8 @@ class SignIn extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props.authError)
+    console.log("Next props status:", nextProps.authError);
+    if (nextProps.authError !== this.state.error)
       this.setState({
         error: nextProps.authError
       })

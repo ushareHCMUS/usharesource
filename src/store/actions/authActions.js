@@ -9,9 +9,9 @@ export const signIn = (credentials) => {
       credentials.email,
       credentials.password
     ).then(() => {
-      console.log('Loginauth:', firebase.auth);
       dispatch({ type: "LOGIN_SUCCESS" });
     }).catch((err) => {
+      dispatch({ type: "LOGIN_SUCCESS" });
       dispatch({ type: "LOGIN_ERROR", err });
     })
   }

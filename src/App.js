@@ -24,11 +24,11 @@ class App extends Component {
             <Route exact path='/signin' component = {SignIn} />
             <Route exact path='/' component = {GroupList} />
             <Route exact path='/group/:id' component = {GroupDetails} />
+            <Route exact path='/news' component = {AllNews} />
             <Route path='/group/:id/add' component = {AddMember} />
             <Route path='/news/add' component = {AddNews} />
             <Route path='/news/:id/edit' component = {EditNews} />
             <Route path='/news/:id' component = {NewsDetails} />
-            <Route exact path='/news' component = {AllNews} />
           </Switch>
         </div>
       </Router>

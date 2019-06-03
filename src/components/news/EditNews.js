@@ -80,19 +80,13 @@ class EditNews extends Component {
   handlePublicSelect = (isPublic) => {
     this.setState({
       isPublic
-    },() => {
-      if(this.state.isPublic.value === true) this.setState({selectedGroups:[]})
     })
   }
 
   componentWillMount = () => {
     const { news } = this.props;
     if (news) {
-      const groups = news.groups.map(single => {
-        return (
-          { value: single, label: single }
-        )
-      });
+      const groups = { value: news.groups, label: news.groups };
       const isImportant = { value: news.isImportant, label: news.isImportant.toString().charAt(0).toUpperCase() + news.isImportant.toString().slice(1) };
       const isPublic = { value: news.isPublic, label: news.isPublic.toString().charAt(0).toUpperCase() + news.isPublic.toString().slice(1) };
       this.setState({
@@ -152,27 +146,13 @@ class EditNews extends Component {
                   <input className="form-control" id="place" placeholder="" onChange={this.handleChange} value={this.state.place} />
                 </div>
 
-                {
-                  this.state.isPublic.value!==true ? <Select value={this.state.selectedGroups}
-                    options={groupsOptions}
-                    onChange={this.handleGroupsSelect}
-                    placeholder='Select groups'
-                    name='groupsId'
-                    required
-                    isMulti
-                    allowSelectAll
-                  /> : <Select value={this.state.selectedGroups}
-                    options={groupsOptions}
-                    onChange={this.handleGroupsSelect}
-                    placeholder='Select groups'
-                    name='groupsId'
-                    required
-                    isMulti
-                    allowSelectAll
-                    isDisabled
-                  />
-                }
-
+                <Select value={this.state.selectedGroups}
+                  options={groupsOptions}
+                  onChange={this.handleGroupsSelect}
+                  placeholder='Select groups'
+                  name='groupsId'
+                  required
+                />
                 <Select value={this.state.isImportant}
                   options={importantOptions}
                   onChange={this.handleImportantSelect}
@@ -184,7 +164,7 @@ class EditNews extends Component {
                 <Select value={this.state.isPublic}
                   options={isPublic}
                   onChange={this.handlePublicSelect}
-                  placeholder='Public news?'
+                  placeholder='Is public?'
                   name='isPublic'
                   required
                 />

@@ -14,7 +14,8 @@ class AddMember extends Component {
 
     this.state = {
       selectedUser: null,
-      userId: ''
+      userId: '',
+      error: null
     }
   }
 
@@ -22,8 +23,11 @@ class AddMember extends Component {
   handleUserSelect = (selectedUser) => {
     this.setState({
       userId: selectedUser.value,
-      selectedUser
+      selectedUser,
     });
+    if (this.state.error !== null) {
+      this.setState({ error: null })
+    }
   }
 
   //Handle form submit
@@ -33,6 +37,7 @@ class AddMember extends Component {
       this.props.addMember(this.state.userId, this.props.group.id);
       this.userOptions = [];
       this.setState({ selectedUser: null });
+      this.setState({ error: null })
     }
     else {
       console.log("Ngu");
@@ -41,33 +46,34 @@ class AddMember extends Component {
 
   //Success or error notification
   handleNoti = () => {
-    if (this.props.status === "Success")
+    if (this.state.error === "Success")
       return (
         <div className="alert alert-success alert-dismissible fade show" role="alert">
           Successfully added {this.state.userId}
-          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
       )
-    if (this.props.status !== null && this.props.status !== "Success")
+    if (this.state.error !== null && this.state.error !== "Success")
       return (
         <div className="alert alert-danger alert-dismissible fade show" role="alert">
           {this.props.status}
-          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
       )
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.status !== this.state.error)
+      this.setState({
+        error: nextProps.status
+      });
   }
 
 
   render() {
     const userOptions = [];
     const { group, users, auth } = this.props;
-    if(!auth.uid) return <Redirect to='/signin'></Redirect>
-    if(group === undefined) return <Redirect to='/'></Redirect>
-    
+    if (!auth.uid) return <Redirect to='/signin'></Redirect>
+    if (group === undefined) return <Redirect to='/'></Redirect>
+
     if (group && users) {
       if (userOptions.length === 0) {
         for (var i = 0; i < users.length; i++) {
@@ -78,6 +84,9 @@ class AddMember extends Component {
         <div className="container text-center">
           <form className="form-signin mx-auto col-md-6" onSubmit={this.handleSubmit}>
             <h1 className="h3 mb-3 font-weight-normal">{group.groupName} - Add member</h1>
+            {
+              this.handleNoti()
+            }
             <Select value={this.state.selectedUser} options={userOptions} onChange={this.handleUserSelect} placeholder='Select member' name='userId' required />
 
             {
@@ -93,9 +102,6 @@ class AddMember extends Component {
                     </ul>
                   )
                 })
-            }
-            {
-              this.handleNoti()
             }
             <button className="btn btn-lg btn-primary btn-block" type="submit">Add</button>
             <Link to={`/group/${group.id}`} style={{ textDecoration: 'none' }}><button className="btn btn-danger btn-block" type="submit">Return</button></Link>

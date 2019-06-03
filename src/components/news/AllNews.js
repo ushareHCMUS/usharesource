@@ -23,6 +23,8 @@ class AllNews extends Component {
 
   handleNewsSearch = (e) => {
     const { news } = this.props;
+    if (this.state.news === null)
+      this.setState({ news: this.props.news });
     this.setState({
       [e.target.id]: e.target.value
     }, () => {
@@ -103,12 +105,10 @@ class AllNews extends Component {
 
   render() {
 
-    const { group, news, auth } = this.props;
+    const { news, auth } = this.props;
     if(!auth.uid) return <Redirect to='/signin'></Redirect>
-    if (group === undefined) return <Redirect to='/'></Redirect>
 
-    if (group && news) {
-      this.changeState();
+    if (news) {
       return (
         <>
           <div className='container'>
@@ -149,13 +149,9 @@ class AllNews extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const groups = state.firestore.ordered.groups;
-  //Get selected group
-  const group = groups ? groups.filter(target => (target.id === 'hcmus'))[0] : null;
   const news = state.firestore.ordered.news;
   const groupNews = news ? news.filter(groupNews => (groupNews.isPublic !== undefined && groupNews.isPublic === true)) : null;
   return {
-    group: group,
     news: groupNews,
     auth: state.firebase.auth
   }

@@ -4,16 +4,13 @@ export const addNews = (news, groups) => {
     firestore.collection('news').add({
     }).then((docRef) => {
       var batch = firestore.batch();
-      var groupsArr = groups.map(group => { return (group.value) });
-      groupsArr.map(group =>
-        batch.update(firestore.collection('groups').doc(group), {
+      batch.update(firestore.collection('groups').doc(groups.value), {
           news: firestore.FieldValue.arrayUnion(docRef.id.toString())
         })
-      )
       batch.set(firestore.collection('news').doc(docRef.id), {
         title: news.title,
         content: news.content,
-        groups: groupsArr,
+        groups: groups.value,
         isImportant: news.isImportant.value,
         time: news.time,
         place: news.place,
@@ -40,17 +37,14 @@ export const editNews = (news, groups, allGroups) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     var batch = firestore.batch();
-    var groupsArr = groups.map(group => { return (group.value) });
     var nongroupsArr = allGroups.filter(
       function (e) {
         return this.indexOf(e) < 0;
-      }, groupsArr
+      }, groups.value
     );
-    groupsArr.map(group =>
-      batch.update(firestore.collection('groups').doc(group), {
+    batch.update(firestore.collection('groups').doc(groups.value), {
         news: firestore.FieldValue.arrayUnion(news.id)
       })
-    );
     nongroupsArr.map(group =>
       batch.update(firestore.collection('groups').doc(group), {
         news: firestore.FieldValue.arrayRemove(news.id)
@@ -59,7 +53,7 @@ export const editNews = (news, groups, allGroups) => {
     batch.update(firestore.collection('news').doc(news.id), {
       title: news.title,
       content: news.content,
-      groups: groupsArr,
+      groups: groups.value,
       isImportant: news.isImportant,
       place: news.place,
       time: news.time,
